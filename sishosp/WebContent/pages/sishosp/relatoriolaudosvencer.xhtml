@@ -32,6 +32,7 @@
 								unselectable="true">
 								<f:selectItem itemLabel="Geração Nominal" itemValue="N" />
 								<f:selectItem itemLabel="Geração de Laudos" itemValue="L" />
+								<f:selectItem itemLabel="Todos" itemValue="T" />
 								<p:ajax update="frm" event="valueChange"
 									listener="#{RelatoriosController.setaOpcaoRelLaudoVencer}" />
 							</p:selectOneRadio>
@@ -176,7 +177,7 @@
 							</b:column>
 						</b:row>
 
-						<b:row rendered="#{RelatoriosController.atributoGenerico2=='I'}">
+						<b:row>
 
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">

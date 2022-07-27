@@ -309,7 +309,7 @@ public class UnidadeDAO {
     public List<UnidadeBean> listarUnidade() throws ProjetoException {
 
         List<UnidadeBean> lista = new ArrayList<>();
-        String sql = "SELECT id,nome,  nome_principal, e.nome_fantasia, e.cnpj, unidade.rua, unidade.bairro, " +
+        String sql = "SELECT id,nome,  nome_principal, e.nome_fantasia, e.cnpj,  e.restringir_laudo_unidade, unidade.rua, unidade.bairro, " +
                 " unidade.numero, unidade.complemento, unidade.cep, unidade.cidade, unidade.estado, unidade.ddd_1, unidade.telefone_1, unidade.ddd_2, unidade.telefone_2, " +
                 " unidade.email, unidade.site, matriz, unidade.ativo, case when matriz is true then 'Matriz' else 'Filial' end as tipo " +
                 " FROM hosp.unidade join hosp.empresa e on e.cod_empresa = unidade.cod_empresa where unidade.ativo is true;";
@@ -325,6 +325,7 @@ public class UnidadeDAO {
                 unidade.setNomeUnidade(rs.getString("nome"));
                 unidade.setNomeEmpresa(rs.getString("nome_principal"));
                 unidade.setNomeFantasia(rs.getString("nome_fantasia"));
+                unidade.setRestringirLaudoPorUnidade(rs.getBoolean("restringir_laudo_unidade"));
                 unidade.setCnpj(rs.getString("cnpj"));
                 unidade.setRua(rs.getString("rua"));
                 unidade.setBairro(rs.getString("bairro"));
@@ -625,7 +626,7 @@ public class UnidadeDAO {
     public UnidadeBean buscarUnidadePorId(Integer id) throws ProjetoException {
 
         UnidadeBean unidade = new UnidadeBean();
-        String sql = "SELECT id,nome, e.cod_empresa,nome_principal, e.nome_fantasia, cnpj, unidade.rua, unidade.bairro, " +
+        String sql = "SELECT id,nome, e.cod_empresa,nome_principal, e.nome_fantasia, e.restringir_laudo_unidade, cnpj, unidade.rua, unidade.bairro, " +
                 " unidade.numero, unidade.complemento, unidade.cep, unidade.cidade, unidade.estado, unidade.ddd_1, unidade.telefone_1, unidade.ddd_2, unidade.telefone_2, " +
                 " unidade.email, unidade.site, unidade.matriz, unidade.ativo  " +
                 " FROM hosp.unidade join hosp.empresa e on e.cod_empresa = unidade.cod_empresa where unidade.id = ?;";
@@ -641,6 +642,7 @@ public class UnidadeDAO {
                 unidade.setId(rs.getInt("id"));
                 unidade.setNomeUnidade(rs.getString("nome"));
                 unidade.setNomeEmpresa(rs.getString("nome_principal"));
+                unidade.setRestringirLaudoPorUnidade(rs.getBoolean("restringir_laudo_unidade"));
                 unidade.setNomeFantasia(rs.getString("nome_fantasia"));
                 unidade.setCodEmpresa(rs.getInt("cod_empresa"));
                 unidade.setCnpj(rs.getString("cnpj"));

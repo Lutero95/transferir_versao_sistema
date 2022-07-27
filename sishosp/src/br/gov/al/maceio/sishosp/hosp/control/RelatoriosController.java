@@ -32,13 +32,7 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
-import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.*;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.EquipeGrupoProgramaUnidadeDTO;
@@ -308,10 +302,23 @@ public class RelatoriosController implements Serializable {
 		} else {
 			String caminho = CAMINHO_PRINCIPAL;
 			String relatorio = "";
+			compileReport("laudoembranco");
 			if (atributoGenerico1.equals("N"))
 				relatorio = caminho + "laudosvencernominal.jasper";
-			else
+			else if(atributoGenerico1.equals("L"))
 				relatorio = caminho + "laudovencer.jasper";
+			else
+				relatorio = caminho + "laudoembranco.jasper";
+
+			if(atributoGenerico1.equals("T")){
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("codunidade", user_session.getUnidade().getId());
+				map.put("codempresa", user_session.getUnidade().getCodEmpresa());
+				map.put("codpaciente", paciente.getId_paciente());
+				this.executeReport(relatorio, map, "laudo_"+paciente.getNome()+".pdf");
+				return;
+			}
+
 			Map<String, Object> map = new HashMap<String, Object>();
 			if ((atributoGenerico3 != null) && (atributoGenerico3.equals("true")))
 				this.atributoGenerico4 = null;
@@ -336,7 +343,7 @@ public class RelatoriosController implements Serializable {
 				map.put("mostrarlaudosvencidos", atributoGenerico3);
 			else
 				map.put("mostrarlaudosvencidos", null);
-			this.executeReport(relatorio, map, "relatorio.pdf");
+			this.executeReport(relatorio, map, "laudo"+paciente.getNome()+".pdf");
 			// this.executeReportNewTab(relatorio, "laudovencer.pdf",
 			// map);
 

@@ -453,8 +453,11 @@ public class LaudoDAO {
                 + "left join acl.funcionarios func on (func.id_funcionario = l.cod_profissional) "
                 + " left join hosp.cid c on c.cod  = l.cid1 "
                 + " where l.ativo is true ";
-//walter        if (user_session.getUnidade().getRestringirLaudoPorUnidade()==true)
-//walter            sql = sql+ " and l.cod_unidade = ?";
+
+        if (user_session.getUnidade() != null && user_session.getUnidade().getRestringirLaudoPorUnidade() != null &&
+                user_session.getUnidade().getRestringirLaudoPorUnidade()) {
+            sql = sql + " and l.cod_unidade = ?";
+        }
 
         if (!buscaLaudoDTO.getSituacao().equals(SituacaoLaudo.TODOS.getSigla())) {
             sql = sql + " AND l.situacao = ? ";
@@ -512,10 +515,10 @@ public class LaudoDAO {
             conexao = ConnectionFactory.getConnection();
             int i = 1;
             PreparedStatement stm = conexao.prepareStatement(sql);
-            //walter    if (user_session.getUnidade().getRestringirLaudoPorUnidade()){
-            //walterstm.setInt(i, user_session.getUnidade().getId());
-            //walteri++;
-            //walter}
+            if (user_session.getUnidade().getRestringirLaudoPorUnidade()){
+                stm.setInt(i, user_session.getUnidade().getId());
+                i++;
+            }
 
             if (!buscaLaudoDTO.getSituacao().equals(SituacaoLaudo.TODOS.getSigla())) {
                 stm.setString(i, buscaLaudoDTO.getSituacao());

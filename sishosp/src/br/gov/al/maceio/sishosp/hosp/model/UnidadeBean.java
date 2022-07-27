@@ -26,7 +26,6 @@ public class UnidadeBean extends EmpresaBean{
     private String nomeFantasia;
     private String nomeEmpresa;
     private List<ProgramaGrupoEvolucaoBean> listaProgramasGrupoEvolucao;
-	private Boolean restringirLaudoPorUnidade;
 
 
     public UnidadeBean() {

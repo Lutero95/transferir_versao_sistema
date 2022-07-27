@@ -7,5 +7,6 @@
     <property name="keepgenerated" value="true">
       <description>Keep a copy of the generated servlet class java code.</description>
     </property>
+    <property name="development" value="true"></property>
   </jsp-config>
 </sun-web-app>
