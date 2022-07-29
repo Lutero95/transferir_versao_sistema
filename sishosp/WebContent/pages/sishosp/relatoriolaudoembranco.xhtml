@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/template.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+	<f:metadata>
+		<f:viewAction
+			action="#{RelatoriosController.preparaRelLaudosVencer()}" />
+	</f:metadata>
+	<ui:define name="content">
+		<br />
+		<br />
+
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Relatório: Laudo em Branco </h4>
+			</div>
+			<p:growl id="grw" />
+			<div class="panel-body table-body">
+				<h:form id="frm">
+					<b:row >
+						<b:column span="3" class="label-position new-data-size new-comple1">
+							<b:label value="Paciente" severity="info" />
+
+							<p:outputPanel id="outPa">
+								<p:autoComplete value="#{RelatoriosController.agendaController.agenda.paciente}"
+									size="31" converter="conPaciente" required="true"
+									requiredMessage="Paciente: Campo obrigatório!"
+									class="select-agendaEquipe4"
+									completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+									disabled="#{RelatoriosController.atributoGenerico3=='true'}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.nome}">
+									<p:ajax event="itemSelect" update="msgPagina :frm"  global="false" />
+
+								</p:autoComplete>
+
+								<p:commandButton id="btBPa" immediate="true"
+									icon="ui-icon-search" update=":frm"
+									oncomplete="PF('dlgConsuPac').show();" disabled="#{RelatoriosController.atributoGenerico3=='true'}"/>
+							</p:outputPanel>
+						</b:column>
+					</b:row>
+					<b:row>
+						<b:column span="3">
+							<p:commandButton icon="ui-icon-print" value="Imprimir"
+								style="font-size: 12px;  text-align: right;" update="grw"
+								actionListener="#{RelatoriosController.geraLaudoEmBranco(RelatoriosController.agendaController.agenda.paciente)}"
+								ajax="false" />
+						</b:column>
+					</b:row>
+				</h:form>
+			</div>
+		</div>
+
+		<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
+			dynamic="true" modal="true" width="750px" height="400px"
+			responsive="true">
+			<h:form id="formConsuPac">
+				<p:growl id="msgC" />
+
+				<div class="form-group row">
+					<div class="col-sm-2"></div>
+				</div>
+
+				<p:row>
+
+					<p:panelGrid columns="4">
+
+						<p:selectOneMenu value="#{PacienteController.tipoBusca}"
+							style="margin-top: -13px">
+							<f:selectItem itemLabel="Nome" itemValue="nome" />
+							<f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
+							<f:selectItem itemLabel="Matrícula" itemValue="matricula" />
+							<f:selectItem itemLabel="CPF" itemValue="cpf" />
+							<f:selectItem itemLabel="CNS" itemValue="cns" />
+						</p:selectOneMenu>
+
+						<p:inputText value="#{PacienteController.campoBusca}"
+							placeholder="Digite aqui a busca" style="margin-left: 10px;" />
+
+						<p:commandButton
+							action="#{PacienteController.buscarPacientesPorTipo()}"
+							update="tabelapacientes" icon="ui-icon-search"
+							style="margin-left: 10px;" />
+
+						<p:commandButton action="#{PacienteController.listarPacientes()}"
+							update="tabelapacientes" icon="limpar" style="margin-left: 10px;" />
+
+					</p:panelGrid>
+
+				</p:row>
+				<p:dataTable paginator="true" rows="10" id="tabelapacientes"
+					var="pacie" value="#{PacienteController.listaPacientes}"
+					emptyMessage="Nenhum Paciente">
+
+					<p:column width="100">
+						<f:facet name="header">
+                            Prontuário
+                        </f:facet>
+
+						<p:outputLabel value="#{pacie.id_paciente}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+                            Nome
+                        </f:facet>
+
+						<p:outputLabel value="#{pacie.nome}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+                            Matrícula
+                        </f:facet>
+						<p:outputLabel value="#{pacie.matricula}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+                            CNS
+                        </f:facet>
+						<p:outputLabel value="#{pacie.cns}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+                            Selecionar
+                        </f:facet>
+						<p:commandButton
+							update=":frm"
+							icon="fa fa-fw fa-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
+							onclick="PF('dlgConsuPac').hide();">
+							<f:setPropertyActionListener value="#{pacie}"
+								target="#{RelatoriosController.agendaController.agenda.paciente}" />
+						</p:commandButton>
+
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>
+</html>

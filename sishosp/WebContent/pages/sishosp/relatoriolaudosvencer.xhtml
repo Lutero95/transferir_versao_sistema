@@ -32,7 +32,6 @@
 								unselectable="true">
 								<f:selectItem itemLabel="Geração Nominal" itemValue="N" />
 								<f:selectItem itemLabel="Geração de Laudos" itemValue="L" />
-								<f:selectItem itemLabel="Todos" itemValue="T" />
 								<p:ajax update="frm" event="valueChange"
 									listener="#{RelatoriosController.setaOpcaoRelLaudoVencer}" />
 							</p:selectOneRadio>
@@ -66,14 +65,13 @@
 							<p:selectBooleanCheckbox label="Todos os Pacientes ativos com Laudo Vencido"
 													 itemLabel="Todos os Pacientes ativos com Laudo Vencido" style="color:#2e84ce;"
 													 value="#{RelatoriosController.atributoGenerico3}">
-								<p:ajax update="outlaudosvencidos periodovencer"></p:ajax>
+								<p:ajax update="outlaudosvencidos periodovencer outopcoes"></p:ajax>
 							</p:selectBooleanCheckbox>
 						</b:column>
 						</p:outputPanel>
 					</b:row>
 
 					<b:row>
-
 						<b:column col-md="1">
 							<b:label for="periodovencer" class="label label-info"
 								style="margin-left:0px !important" value="A vencer no período"
@@ -177,7 +175,7 @@
 							</b:column>
 						</b:row>
 
-						<b:row>
+						<b:row >
 
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">
@@ -189,17 +187,17 @@
 										requiredMessage="Paciente: Campo obrigatório!"
 										class="select-agendaEquipe4"
 										completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+										disabled="#{RelatoriosController.atributoGenerico3=='true'}"
 										effect="fade" var="theme" forceSelection="true"
 										minQueryLength="1" itemValue="#{theme}"
 										itemLabel="#{theme.nome}">
-										<p:ajax event="itemSelect" update="msgPagina :frm"
-											global="false" />
+										<p:ajax event="itemSelect" update="msgPagina :frm"  global="false" />
 
 									</p:autoComplete>
 
 									<p:commandButton id="btBPa" immediate="true"
 										icon="ui-icon-search" update=":frm"
-										oncomplete="PF('dlgConsuPac').show();" />
+										oncomplete="PF('dlgConsuPac').show();" disabled="#{RelatoriosController.atributoGenerico3=='true'}"/>
 								</p:outputPanel>
 							</b:column>
 						</b:row>
