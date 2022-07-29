@@ -90,21 +90,21 @@
 									target="#{MBFuncionarios.tipo}" />
 							</p:commandButton>
 
-							<p:commandButton title="Excluir" icon="ui-icon-trash"
-								class="btn-acao-table acao-excluir" size="sm" ajax="true"
-								style="margin-left:10px"
-								oncomplete="PF('dialogExclusao').show()">
-
-								<f:setPropertyActionListener value="#{tab}"
-									target="#{MBFuncionarios.profissional}" />
-							</p:commandButton>
-							
 							<p:commandButton title="Definir Nova Senha" icon="ui-icon-key"
 								size="sm" class="btn-acao-table acao-editar"
 								action="#{MBFuncionarios.limparNovaSenha()}"
 								style="margin-left:10px">
 								<f:setPropertyActionListener value="#{tab}"
 									target="#{MBFuncionarios.profissional}" />
+							</p:commandButton>
+
+							<p:commandButton rendered="#{tab.ativo.equals('S')}" title="Desativar" icon="ui-icon-trash"
+											 class="btn-acao-table acao-excluir" size="sm" ajax="true"
+											 style="margin-left:10px"
+											 oncomplete="PF('dialogExclusao').show()">
+
+								<f:setPropertyActionListener value="#{tab}"
+															 target="#{MBFuncionarios.profissional}" />
 							</p:commandButton>
 
 						</h:column>
@@ -118,14 +118,14 @@
 			<h:form id="dlgexcluir">
 				<h:panelGrid columns="1">
 
-					<div class="alert alert-warning" role="alert">Deseja excluir
-						esse profissional?</div>
+					<div class="alert alert-warning" role="alert">Deseja desativar
+						este profissional?</div>
 				</h:panelGrid>
 
 				<div align="center">
 					<p:separator />
 					<p:commandButton look="success" value="Sim" style="float:left;"
-						class="btn-sim" action="#{MBFuncionarios.excluirProfissional()}"
+						class="btn-sim" action="#{MBFuncionarios.desativarProfissional()}"
 						ajax="true" icon="ui-icon-check" update="frmPrincipal" />
 
 					<p:commandButton value="Não" class="btn-nao"

@@ -853,17 +853,20 @@ public class FuncionarioController implements Serializable {
 		return true;
 	}
 	
-	public void excluirProfissional() throws ProjetoException {
+	public void desativarProfissional() throws ProjetoException {
 
-		boolean excluiu = fDao.excluirProfissional(profissional);
+		boolean excluiu = fDao.desativarProfissional(profissional.getId());
 		if (excluiu == true) {
-			JSFUtil.adicionarMensagemSucesso("Profissional excluído com sucesso!", "Sucesso");
+			JSFUtil.adicionarMensagemSucesso("Profissional desativado com sucesso!", "Sucesso");
 			JSFUtil.fecharDialog("dialogExclusao");
 		} else {
-			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+			JSFUtil.adicionarMensagemErro("Não foi possível desativer o profissional!", "Erro");
 			JSFUtil.fecharDialog("dialogExclusao");
 		}
-		this.listaProfissional = fDao.listarProfissionalAtendimento();
+
+		if(listaProfissional.contains(profissional)){
+			listaProfissional.get(listaProfissional.indexOf(profissional)).setAtivo("N");
+		}
 	}
 
 	public void alterarProfissional() throws ProjetoException {

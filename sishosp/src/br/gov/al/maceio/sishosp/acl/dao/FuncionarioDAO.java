@@ -1762,36 +1762,18 @@ public class FuncionarioDAO {
 		return listaProf;
 	}
 
-	public boolean excluirProfissional(FuncionarioBean profissional) throws ProjetoException {
+	public boolean desativarProfissional(Long idProfissional) throws ProjetoException {
 
 		Boolean retorno = false;
 
-		String sql1 = "delete from hosp.profissional_programa_grupo where codprofissional = ?";
-		String sql2 = "delete from acl.perm_usuario where id_usuario = ?";
-		String sql3 = "delete from hosp.funcionario_unidades where cod_funcionario = ?";
-		String sql4 = "delete from acl.funcionarios where id_funcionario = ?";
+		String sql1 = "update acl.funcionarios set ativo = 'N' where id_funcionario = ?";
 
 		try {
 
 			con = ConnectionFactory.getConnection();
 
 			ps = con.prepareStatement(sql1);
-			ps.setLong(1, profissional.getId());
-			ps.execute();
-
-			ps = con.prepareStatement(sql2);
-			ps.setLong(1, profissional.getId());
-			ps.execute();
-
-			ps = con.prepareStatement(sql3);
-			ps.setLong(1, profissional.getId());
-			ps.execute();
-
-			removerCbosProfissional(profissional.getId(), con);
-			removerProfissionalPermissaoSistema(profissional.getId(), con);
-
-			ps = con.prepareStatement(sql4);
-			ps.setLong(1, profissional.getId());
+			ps.setLong(1, idProfissional);
 			ps.execute();
 
 			con.commit();
