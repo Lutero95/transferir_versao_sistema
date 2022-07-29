@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.15.0.final using JasperReports Library version 6.15.0-dd49bfb94918336b8321d5507193f0169ead4e95  -->
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pts" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="24cc471e-33e0-448f-ae71-d324a5b957fb">
 	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PESTALOZZI"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -20,6 +19,7 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.report.description" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Pestalozzi"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -167,11 +167,6 @@ WHERE pi.status = 'A' and  coalesce(laudo.codpaciente, pi.id_paciente)  = p.cod_
 				<text><![CDATA[1 - NOME DO PACIENTE]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement key="" x="-8" y="136" width="571" height="70" uuid="1d7ceea7-950a-4299-a87b-4de65049a433">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-			</rectangle>
-			<rectangle>
 				<reportElement x="371" y="97" width="193" height="20" uuid="1890b9ec-2f5c-4f0e-9e0f-1c314acdb44d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -210,6 +205,11 @@ WHERE pi.status = 'A' and  coalesce(laudo.codpaciente, pi.id_paciente)  = p.cod_
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cns}]]></textFieldExpression>
 			</textField>
+			<rectangle>
+				<reportElement key="" x="-8" y="136" width="571" height="70" uuid="1d7ceea7-950a-4299-a87b-4de65049a433">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
 			<textField isBlankWhenNull="true">
 				<reportElement x="-4" y="148" width="559" height="58" uuid="fdb5a917-e0e2-40f4-accd-e92836875bbe">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -254,7 +254,7 @@ WHERE pi.status = 'A' and  coalesce(laudo.codpaciente, pi.id_paciente)  = p.cod_
 				<textElement>
 					<font size="6"/>
 				</textElement>
-				<text><![CDATA[7 - INCAPACIDADES FUNCIONAIS]]></text>
+				<text><![CDATA[INCAPACIDADES FUNCIONAIS]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement x="-13" y="120" width="579" height="13" forecolor="#000000" backcolor="#000000" uuid="25fc5a67-2d98-43a4-b678-432889db138b">
@@ -311,7 +311,7 @@ WHERE pi.status = 'A' and  coalesce(laudo.codpaciente, pi.id_paciente)  = p.cod_
 				<textElement>
 					<font size="6"/>
 				</textElement>
-				<text><![CDATA[8 - CAPACIDADES FUNCIONAIS]]></text>
+				<text><![CDATA[CAPACIDADES FUNCIONAIS]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="-5" y="221" width="559" height="58" uuid="ec6c6439-4415-46ad-a53a-1dc2f3cdeea6"/>
@@ -339,7 +339,7 @@ WHERE pi.status = 'A' and  coalesce(laudo.codpaciente, pi.id_paciente)  = p.cod_
 				<textElement>
 					<font size="6"/>
 				</textElement>
-				<text><![CDATA[9 - OBJETIVOS FAMÍLIA / PACIENTE]]></text>
+				<text><![CDATA[OBJETIVOS FAMÍLIA / PACIENTE]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement key="" x="-8" y="357" width="571" height="70" uuid="50500dec-4863-455b-af3d-51e3e23d82db">
@@ -360,7 +360,7 @@ WHERE pi.status = 'A' and  coalesce(laudo.codpaciente, pi.id_paciente)  = p.cod_
 				<textElement>
 					<font size="6"/>
 				</textElement>
-				<text><![CDATA[10 - OBJETIVOS GERAIS / MULTIDISCIPLINAR]]></text>
+				<text><![CDATA[OBJETIVOS GERAIS / MULTIDISCIPLINAR]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="279" y="83" width="275" height="12" uuid="f84b0529-65ca-4f68-a970-6301293c8015">
@@ -399,6 +399,38 @@ WHERE pi.status = 'A' and  coalesce(laudo.codpaciente, pi.id_paciente)  = p.cod_
 				</textElement>
 				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
 			</textField>
+			<rectangle>
+				<reportElement key="" mode="Opaque" x="-8" y="136" width="571" height="143" uuid="e71cf219-c726-4f57-aa26-4dc9ce48abef">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<printWhenExpression><![CDATA[$F{analise_resultados_objetivos_gerais} != null]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField isBlankWhenNull="true">
+				<reportElement x="-4" y="148" width="559" height="130" uuid="306db2c1-558b-4ae2-b2c7-ef4967920bf8">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<printWhenExpression><![CDATA[$F{analise_resultados_objetivos_gerais} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{analise_resultados_objetivos_gerais}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-5" y="139" width="220" height="9" uuid="713993b5-2c6c-495f-b2cb-f5964eea8626">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<printWhenExpression><![CDATA[$F{analise_resultados_objetivos_gerais} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[ANÁLISE DOS RESULTADOS DOS OBJETIVOS GERAIS]]></text>
+			</staticText>
 		</band>
 	</detail>
 </jasperReport>
