@@ -302,7 +302,6 @@ public class RelatoriosController implements Serializable {
 		} else {
 			String caminho = CAMINHO_PRINCIPAL;
 			String relatorio = "";
-			compileReport("laudoembranco");
 			if (atributoGenerico1.equals("N"))
 				relatorio = caminho + "laudosvencernominal.jasper";
 			else if(atributoGenerico1.equals("L"))
@@ -460,29 +459,35 @@ public class RelatoriosController implements Serializable {
 					relatorio = caminho + "frequencia.jasper";
 					this.executeReport(relatorio, map, "relatorio.pdf");
 					rDao.limparTabelaTemporariaFrequencia(randomico);
-
+					preparaRelFrequencia();
 				}
 			}
 		}
-		else
-		{
-				Integer frequencia = 20;
-				int randomico = JSFUtil.geraNumeroRandomico();
-				RelatorioDAO rDao = new RelatorioDAO();
-				rDao.popularTabelaTemporariaFrequencia(randomico, frequencia);
-					String caminho = CAMINHO_PRINCIPAL;
-					String relatorio = "";
+		else {
+			Integer frequencia = 20;
+			int randomico = JSFUtil.geraNumeroRandomico();
+			RelatorioDAO rDao = new RelatorioDAO();
+			rDao.popularTabelaTemporariaFrequencia(randomico, frequencia);
+			String caminho = CAMINHO_PRINCIPAL;
+			String relatorio = "";
 
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("chave", randomico);
-					map.put("codunidade", user_session.getUnidade().getId());
-					map.put("codpaciente", paciente.getId_paciente());
-					map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
-					relatorio = caminho + "frequencia_avulsa.jasper";
-					this.executeReport(relatorio, map, "frequencia_avulsa.pdf");
-					rDao.limparTabelaTemporariaFrequencia(randomico);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("chave", randomico);
+			map.put("codunidade", user_session.getUnidade().getId());
+			map.put("codpaciente", paciente.getId_paciente());
 
+			map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
+			if(this.tipoRelatorioFrequencia.equals(TipoRelatorioFrequencia.COM_DATA.getSigla())){
+				map.put("tipoDetalhe", "frequencia_detalhe_comdata.jasper");
+			} else if (this.tipoRelatorioFrequencia.equals(TipoRelatorioFrequencia.SOMENTE_ASSINATURA.getSigla())){
+				map.put("tipoDetalhe", "frequencia_detalhe_somenteassinatura.jasper");
+			} else { //Completo
+				map.put("tipoDetalhe", "frequencia_detalhe.jasper");
+			}
 
+			relatorio = caminho + "frequencia_avulsa.jasper";
+			this.executeReport(relatorio, map, "frequencia_avulsa.pdf");
+			rDao.limparTabelaTemporariaFrequencia(randomico);
 		}
 	}
 

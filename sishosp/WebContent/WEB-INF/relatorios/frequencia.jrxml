@@ -865,6 +865,33 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+$P{tipoDetalhe}]]></subreportExpression>
 				</subreport>
+				<textField isBlankWhenNull="true">
+					<reportElement x="7" y="284" width="83" height="16" uuid="7eb89e94-36a7-4ef1-8a3f-7fcfd16508d1">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="DejaVu Sans" size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{vencimentolaudo}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="95" y="280" width="339" height="16" uuid="d0f90f56-c506-42a5-8c46-2c1db62cbdae">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="DejaVu Sans" size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nomeprofissional}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="480" y="280" width="61" height="16" uuid="d9cd45d6-2aa8-4297-9f3f-7b7e6d23f32d">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="DejaVu Sans" size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{cid1}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 	</group>
