@@ -312,16 +312,10 @@ public class RelatoriosController implements Serializable {
 		} else {
 			String caminho = CAMINHO_PRINCIPAL;
 			String relatorio = "";
-
-			String filename = "";
-			if (atributoGenerico1.equals("N")){
+			if (atributoGenerico1.equals("N"))
 				relatorio = caminho + "laudosvencernominal.jasper";
-				filename = "laudosVencidos";
-			} else if(atributoGenerico1.equals("L")) {
+			else
 				relatorio = caminho + "laudovencer.jasper";
-				filename = "laudoAVencer_"+paciente.getNome();
-			}
-
 			Map<String, Object> map = new HashMap<String, Object>();
 			if ((atributoGenerico3 != null) && (atributoGenerico3.equals("true")))
 				this.atributoGenerico4 = null;
@@ -336,17 +330,20 @@ public class RelatoriosController implements Serializable {
 
 			if (paciente != null)
 				map.put("codpaciente", paciente.getId_paciente());
-			
+
 			if(equipe != null)
 				map.put("codequipe", equipe.getCodEquipe());
-			
+
 			map.put("cod_laudo", null);
 
 			if ((atributoGenerico3 != null) && (atributoGenerico3.equals("true")))
 				map.put("mostrarlaudosvencidos", atributoGenerico3);
 			else
 				map.put("mostrarlaudosvencidos", null);
-			this.executeReport(relatorio, map, filename+".pdf");
+			this.executeReport(relatorio, map, "relatorio.pdf");
+			// this.executeReportNewTab(relatorio, "laudovencer.pdf",
+			// map);
+
 		}
 	}
 
