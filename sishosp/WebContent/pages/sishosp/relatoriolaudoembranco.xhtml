@@ -24,6 +24,18 @@
 			<div class="panel-body table-body">
 				<h:form id="frm">
 					<b:row >
+						<b:column span="2">
+							<b:label value="Modelo" severity="info" style="margin-left: 0px !important" />
+							<b:selectOneMenu required="true"
+											 style="margin-top: 3px !important"
+											 requiredMessage="Selecione o Modelo de Relatório" id="console"
+											 value="#{RelatoriosController.tipoRelatorioLaudoEmBranco}"
+											 unselectable="true">
+								<f:selectItem itemLabel="Antigo" itemValue="A" />
+								<f:selectItem itemLabel="Moderno" itemValue="M" />
+							</b:selectOneMenu>
+						</b:column>
+
 						<b:column span="3" class="label-position new-data-size new-comple1">
 							<b:label value="Paciente" severity="info" />
 
@@ -33,7 +45,6 @@
 									requiredMessage="Paciente: Campo obrigatório!"
 									class="select-agendaEquipe4"
 									completeMethod="#{PacienteController.listaPacienteAutoComplete}"
-									disabled="#{RelatoriosController.atributoGenerico3=='true'}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.nome}">
@@ -43,7 +54,7 @@
 
 								<p:commandButton id="btBPa" immediate="true"
 									icon="ui-icon-search" update=":frm"
-									oncomplete="PF('dlgConsuPac').show();" disabled="#{RelatoriosController.atributoGenerico3=='true'}"/>
+									oncomplete="PF('dlgConsuPac').show();"/>
 							</p:outputPanel>
 						</b:column>
 					</b:row>

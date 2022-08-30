@@ -110,6 +110,7 @@ public class RelatoriosController implements Serializable {
 	private String opcaoAtendimento;
 
 	private String tipoRelatorioFrequencia;
+	private String tipoRelatorioLaudoEmBranco;
 
 	public RelatoriosController() throws ProjetoException {
 		this.programa = new ProgramaBean();
@@ -146,6 +147,7 @@ public class RelatoriosController implements Serializable {
 		this.listaEquipeGruposProgramaUnidadeDTOSelecionados = new ArrayList<>();
 		this.opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
 		this.tipoRelatorioFrequencia = TipoRelatorioFrequencia.COMPLETO.getSigla();
+		this.tipoRelatorioLaudoEmBranco = TipoRelatorioLaudoEmBranco.MODERNO.getSigla();
 	}
 
 	public void limparDados() {
@@ -295,13 +297,19 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void geraLaudoEmBranco(PacienteBean paciente) throws IOException, ParseException, ProjetoException {
-		String caminho = CAMINHO_PRINCIPAL;
-		String relatorio = "";
-		relatorio = caminho + "laudoembranco.jasper";
+		String relatorio = CAMINHO_PRINCIPAL;
+
+		if(tipoRelatorioLaudoEmBranco.equals(TipoRelatorioLaudoEmBranco.ANTIGO.getSigla())){
+			relatorio = relatorio + "laudoembrancoantigo.jasper";
+		} else if (tipoRelatorioLaudoEmBranco.equals(TipoRelatorioLaudoEmBranco.MODERNO.getSigla())){
+			relatorio = relatorio + "laudoembranco.jasper";
+		}
+
+
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("codempresa", user_session.getUnidade().getCodEmpresa());
 		map.put("codpaciente", paciente.getId_paciente());
-		this.executeReport(relatorio, map, "laudoEmBranco_"+paciente.getNome()+".pdf");
+		this.executeReport(relatorio, map, "laudoEmBranco_"+paciente.getNome().replace(" ", "-")+".pdf");
 	}
 
 	public void geraLaudoVencer(ProgramaBean programa, GrupoBean grupo, PacienteBean paciente, EquipeBean equipe)
@@ -2371,5 +2379,13 @@ public class RelatoriosController implements Serializable {
 
 	public void setTipoRelatorioFrequencia(String tipoRelatorioFrequencia) {
 		this.tipoRelatorioFrequencia = tipoRelatorioFrequencia;
+	}
+
+	public String getTipoRelatorioLaudoEmBranco() {
+		return tipoRelatorioLaudoEmBranco;
+	}
+
+	public void setTipoRelatorioLaudoEmBranco(String tipoRelatorioLaudoEmBranco) {
+		this.tipoRelatorioLaudoEmBranco = tipoRelatorioLaudoEmBranco;
 	}
 }
