@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.inject.Named;
 
 import br.gov.al.maceio.sishosp.comum.Configuracao.Propriedades;
 
@@ -17,7 +16,7 @@ public class ParametrosTemplateController implements Serializable {
 	public Boolean conexaoLocal = Propriedades.Conexao.equals(Propriedades.Conexoes.valueOf("LOCALHOST"));
 
     public ParametrosTemplateController() {
-		setVersao("Versão: 1.3.2");
+		setVersao("Versão: 1.3.3");
 		setAno("2022");
 		if(conexaoLocal){
 			setFooterLocalStyle("background-image: -webkit-linear-gradient(#049b1d, #048732 60%, #036923);\n" + //old: #9b0404, #870404 60%, #690303
