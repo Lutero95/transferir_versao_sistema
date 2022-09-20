@@ -7,11 +7,13 @@ public class ParametroEmpresaBean {
 	private SituacaoAtendimentoBean situacaoPadraoFaltaProfissional; 
 	private SituacaoAtendimentoBean situacaoPadraoLicencaMedica;
 	private SituacaoAtendimentoBean situacaoPadraoFerias;
+	private SituacaoAtendimentoBean situacaoPadraoDesligamento;
 	
 	public ParametroEmpresaBean() {
 		situacaoPadraoFaltaProfissional = new SituacaoAtendimentoBean();
 		situacaoPadraoLicencaMedica  = new SituacaoAtendimentoBean();
 		situacaoPadraoFerias = new SituacaoAtendimentoBean();
+		situacaoPadraoDesligamento = new SituacaoAtendimentoBean();
 	}
 	
 	
@@ -44,5 +46,11 @@ public class ParametroEmpresaBean {
 	}
 	public void setSituacaoPadraoFerias(SituacaoAtendimentoBean situacaoPadraoFerias) {
 		this.situacaoPadraoFerias = situacaoPadraoFerias;
+	}
+	public SituacaoAtendimentoBean getSituacaoPadraoDesligamento() {
+		return situacaoPadraoDesligamento;
+	}
+	public void setSituacaoPadraoDesligamento(SituacaoAtendimentoBean situacaoPadraoDesligamento) {
+		this.situacaoPadraoDesligamento = situacaoPadraoDesligamento;
 	}
 }

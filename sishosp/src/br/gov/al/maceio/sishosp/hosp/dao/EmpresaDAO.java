@@ -306,7 +306,7 @@ public class EmpresaDAO {
     		throws ProjetoException, SQLException {
 
     	ParametroEmpresaBean parametroEmpresa = new ParametroEmpresaBean();
-        String sql = "SELECT id_empresa, situacao_padrao_falta_profissional, situacao_padrao_licenca_medica, situacao_padrao_ferias " + 
+        String sql = "SELECT id_empresa, situacao_padrao_falta_profissional, situacao_padrao_licenca_medica, situacao_padrao_ferias, situacao_padrao_desligamento_profissional " +
         		"FROM hosp.parametro_empresa where id_empresa = ?;";
 
         try {
@@ -319,6 +319,7 @@ public class EmpresaDAO {
             	parametroEmpresa.getSituacaoPadraoFaltaProfissional().setId(rs.getInt("situacao_padrao_falta_profissional"));
             	parametroEmpresa.getSituacaoPadraoLicencaMedica().setId(rs.getInt("situacao_padrao_licenca_medica"));
             	parametroEmpresa.getSituacaoPadraoFerias().setId(rs.getInt("situacao_padrao_ferias"));
+                parametroEmpresa.getSituacaoPadraoDesligamento().setId(rs.getInt("situacao_padrao_desligamento_profissional"));
             }
         } catch (SQLException ex2) {
         	conexaoAuxiliar.rollback();
@@ -334,8 +335,8 @@ public class EmpresaDAO {
     		throws ProjetoException, SQLException {
 
         String sql = "INSERT INTO hosp.parametro_empresa " + 
-        		"(id_empresa, situacao_padrao_falta_profissional, situacao_padrao_licenca_medica, situacao_padrao_ferias) " + 
-        		"VALUES(?, ?, ?, ?); ";
+        		"(id_empresa, situacao_padrao_falta_profissional, situacao_padrao_licenca_medica, situacao_padrao_ferias, situacao_padrao_desligamento_profissional) " +
+        		"VALUES(?, ?, ?, ?, ?); ";
 
         try {
             PreparedStatement stm = conexaoAuxiliar.prepareStatement(sql);
@@ -355,6 +356,11 @@ public class EmpresaDAO {
             	stm.setNull(4, Types.NULL);
             else
             	stm.setInt(4, empresa.getParametroEmpresa().getSituacaoPadraoFerias().getId());
+
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(empresa.getParametroEmpresa().getSituacaoPadraoDesligamento().getId()))
+                stm.setNull(5, Types.NULL);
+            else
+                stm.setInt(5, empresa.getParametroEmpresa().getSituacaoPadraoDesligamento().getId());
             
             stm.executeUpdate();
         } catch (SQLException ex2) {

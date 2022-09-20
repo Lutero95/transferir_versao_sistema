@@ -205,43 +205,53 @@
 						
 						<p:tab title="Parâmetros">
 							<p:fieldset legend="Situação de Atendimento Padrão por Afastamento">
-								<b:row>
-									<b:column span="3" class="label-position new-col4">
-										<b:label value="Falta de profissional" severity="info" />
+								<b:column span="3">
+									<b:label value="Falta de profissional" severity="info" />
 
-										<b:selectOneMenu style="color: #1d5987 !important;"
-											value="#{EmpresaController.empresa.parametroEmpresa.situacaoPadraoFaltaProfissional.id}">
-											<f:selectItem itemLabel="Selecione" itemValue="" />
-											<f:selectItems
+									<b:selectOneMenu style="color: #1d5987 !important;"
+										value="#{EmpresaController.empresa.parametroEmpresa.situacaoPadraoFaltaProfissional.id}">
+										<f:selectItem itemLabel="Selecione" itemValue="" />
+										<f:selectItems
+											value="#{EmpresaController.listaSituacoes}" var="sit"
+											itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
+									</b:selectOneMenu>
+								</b:column>
+
+								<b:column span="3">
+									<b:label value="Licença Médica" severity="info" />
+
+									<b:selectOneMenu style="color: #1d5987 !important;"
+										value="#{EmpresaController.empresa.parametroEmpresa.situacaoPadraoLicencaMedica.id}">
+										<f:selectItem itemLabel="Selecione" itemValue="" />
+										<f:selectItems
+											value="#{EmpresaController.listaSituacoes}" var="sit"
+											itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
+									</b:selectOneMenu>
+								</b:column>
+
+								<b:column span="3">
+									<b:label value="Férias" severity="info" />
+
+									<b:selectOneMenu style="color: #1d5987 !important;"
+										value="#{EmpresaController.empresa.parametroEmpresa.situacaoPadraoFerias.id}">
+										<f:selectItem itemLabel="Selecione" itemValue="" />
+										<f:selectItems
+											value="#{EmpresaController.listaSituacoes}" var="sit"
+											itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
+									</b:selectOneMenu>
+								</b:column>
+
+								<b:column span="3">
+									<b:label value="Desligamento" severity="info" />
+
+									<b:selectOneMenu style="color: #1d5987 !important;"
+													 value="#{EmpresaController.empresa.parametroEmpresa.situacaoPadraoDesligamento.id}">
+										<f:selectItem itemLabel="Selecione" itemValue="" />
+										<f:selectItems
 												value="#{EmpresaController.listaSituacoes}" var="sit"
 												itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
-										</b:selectOneMenu>
-									</b:column>
-									
-									<b:column span="3" class="label-position new-col4">
-										<b:label value="Licença Médica" severity="info" />
-
-										<b:selectOneMenu style="color: #1d5987 !important;"
-											value="#{EmpresaController.empresa.parametroEmpresa.situacaoPadraoLicencaMedica.id}">
-											<f:selectItem itemLabel="Selecione" itemValue="" />
-											<f:selectItems
-												value="#{EmpresaController.listaSituacoes}" var="sit"
-												itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
-										</b:selectOneMenu>
-									</b:column>
-
-									<b:column span="3" class="label-position new-col4">
-										<b:label value="Férias" severity="info" />
-
-										<b:selectOneMenu style="color: #1d5987 !important;" 
-											value="#{EmpresaController.empresa.parametroEmpresa.situacaoPadraoFerias.id}">
-											<f:selectItem itemLabel="Selecione" itemValue="" />
-											<f:selectItems
-												value="#{EmpresaController.listaSituacoes}" var="sit"
-												itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
-										</b:selectOneMenu>
-									</b:column>
-								</b:row>
+									</b:selectOneMenu>
+								</b:column>
 							</p:fieldset>
 						</p:tab>
 					</p:tabView>
