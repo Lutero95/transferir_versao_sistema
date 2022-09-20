@@ -360,15 +360,15 @@
 									<b:label value="CNS" severity="info" />
 
 									<p:outputPanel id="outProcP2">
-										<b:inputText value="#{MBFuncionarios.profissional.cns}"
-													 class="form-control" required="true"
-													 validator="CaractereEmBrancoValidator"
+										<p:inputText value="#{MBFuncionarios.profissional.cns}"
+													 maxlength="15" class="form-control" required="true"
+													 validator="CNSProfissionalValidator"
 													 requiredMessage="CNS: Campo obrigátorio!">
+											<p:keyFilter mask="pint" />
 											<p:ajax
 													listener="#{MBFuncionarios.validaCns(MBFuncionarios.profissional.cns)}"
-													global="false" event="blur" immediate="true"
-													update=":msgPagina" />
-										</b:inputText>
+													global="false" event="blur" immediate="true" update=":msgPagina" />
+										</p:inputText>
 									</p:outputPanel>
 								</b:column>
 							</b:row>

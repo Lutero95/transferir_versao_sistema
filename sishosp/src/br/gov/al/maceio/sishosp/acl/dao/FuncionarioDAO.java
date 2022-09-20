@@ -28,10 +28,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
-import br.gov.al.maceio.sishosp.hosp.model.CboBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.*;
 
 public class FuncionarioDAO {
 
@@ -138,6 +135,35 @@ public class FuncionarioDAO {
 			}
 		}
 		return lista;
+	}
+
+	public FuncionarioBean verificaExisteCnsCadastrado(String cnsProfissional) throws ProjetoException {
+		FuncionarioBean retorno = null;
+
+		String sql = "select descfuncionario from acl.funcionarios where cns=?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+
+			stmt.setString(1, cnsProfissional);
+
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				retorno = new FuncionarioBean();
+				retorno.setNome(rs.getString(1));
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
 	}
 	
 	public Boolean verificaSeRealizaEvolucaoFalta(Long id_funcionario) throws ProjetoException {

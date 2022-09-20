@@ -10,6 +10,11 @@
     </validator>
 
     <validator>
+        <validator-id>CNSProfissionalValidator</validator-id>
+        <validator-class>br.gov.al.maceio.sishosp.comum.validator.CNSProfissionalValidator</validator-class>
+    </validator>
+
+    <validator>
         <validator-id>CNSValidator</validator-id>
         <validator-class>br.gov.al.maceio.sishosp.comum.validator.CNSValidator</validator-class>
     </validator>
