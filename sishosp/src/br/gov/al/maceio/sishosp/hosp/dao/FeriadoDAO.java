@@ -21,7 +21,7 @@ public class FeriadoDAO {
 
     public Boolean gravarFeriado(FeriadoBean feriado) throws ProjetoException {
         Boolean retorno = false;
-        String sql = "insert into hosp.feriado (descferiado, dataferiado) values (?, ?);";
+        String sql = "insert into hosp.feriado (descferiado, dataferiado, created_at, updated_at) values (?, ?, now(), now());";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -46,7 +46,7 @@ public class FeriadoDAO {
 
     public Boolean alterarFeriado(FeriadoBean feriado) throws ProjetoException {
         Boolean retorno = false;
-        String sql = "update hosp.feriado set descferiado = ?, dataferiado = ? where codferiado = ?";
+        String sql = "update hosp.feriado set descferiado = ?, dataferiado = ?, updated_at = now() where codferiado = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
