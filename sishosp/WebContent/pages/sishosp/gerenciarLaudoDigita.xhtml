@@ -57,6 +57,7 @@
 					<div align="center">
 						<b:messages value="Error" id="msgPagina"></b:messages>
 					</div>
+
 					<p:row>
 						<p:autoUpdate/>
 
@@ -97,9 +98,11 @@
 							</p:panelGrid>
 						</p:outputPanel>
 
+					</p:row>
 
-						<p:panelGrid columns="4">
 
+					<b:row>
+						<b:column span="7">
 							<p:selectOneMenu value="#{LaudoController.buscaLaudoDTO.tipoBusca}">
 								<f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
 								<f:selectItem itemLabel="Protuário Paciente"
@@ -114,16 +117,45 @@
 							<p:inputText value="#{LaudoController.buscaLaudoDTO.campoBusca}"
 										 placeholder="Digite aqui o que deseja buscar"
 										 style="margin-left: 10px;width:300px" />
+						</b:column>
 
-							<p:commandButton
-									action="#{LaudoController.validaPeriodoBusca(LaudoController.buscaLaudoDTO)}"
-									update="tabela msgPagina" icon="ui-icon-search"
-									style="margin-left: 10px;" />
+						<b:column span="3"
+								  class="label-position new-data-size new-comple1">
+							<b:label value="Procedimento" severity="info"/>
+
+							<p:outputPanel id="outProc">
+								<p:autoComplete required="false"
+												requiredMessage="Filtre por um procedimento!"
+												completeMethod="#{LaudoController.listaProcedimentoAutoComplete}"
+												value="#{LaudoController.buscaLaudoDTO.procedimento}"
+												size="31" converter="conProcedimento" class="select-agendaEquipe4"
+												effect="fade" var="proc" forceSelection="true"
+												minQueryLength="1" itemValue="#{proc}"
+												itemLabel="#{proc.nomeProc}">
+									<p:ajax event="itemSelect"
+											update=":frmPrincipal"/>
+
+								</p:autoComplete>
+
+								<p:commandButton id="btBusPr"
+												 icon="ui-icon-search" process="@this"
+												 action="#{LaudoController.abrirDialogListaProcedimentos()}"
+												 update=":frmPrincipal"/>
+							</p:outputPanel>
+						</b:column>
+					</b:row>
 
 
-						</p:panelGrid>
+					<b:row>
+						<b:column span="2" class="col-md-2-new new-span1"
+								  style="margin-bottom:10px;">
 
-					</p:row>
+							<p:commandButton value="Buscar" icon="ui-icon-search"
+											 class="btn-acao-table acao-buscar"
+											 action="#{LaudoController.validaPeriodoBusca(LaudoController.buscaLaudoDTO)}"
+											 update="tabela msgPagina"></p:commandButton>
+						</b:column>
+					</b:row>
 
 
 					<p:dataTable rows="20" paginator="true" id="tabela" style="margin-top: 10px"
@@ -284,6 +316,43 @@
 									 action="#{LaudoController.validarSenhaLiberacao()}" />
 				</div>
 
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consultar Procedimento" styleClass="topDialog"
+				  widgetVar="dlgConsulProc" modal="true" resizable="false"
+				  draggable="true" responsive="true" width="50%">
+			<h:form id="formConsulProc">
+				<p:outputPanel >
+					<p:autoUpdate/>
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+								 value="#{LaudoController.listaProcedimentosFiltro}" var="proc">
+
+						<h:column>
+							<f:facet name="header">
+								Descrição
+							</f:facet>
+							<p:outputLabel value="#{proc.codProc} - #{proc.nomeProc}"/>
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+								Adicionar
+							</f:facet>
+							<div align="center">
+								<p:commandButton
+										icon="fa fa-fw fa-check" title="Selecionar"
+										class="new-btn-acao-table acao-editar"
+										update=":frmPrincipal :msgPagina"
+										action="#{LaudoController.fecharDialogListaProcedimentos()}"
+										process="@this">
+									<f:setPropertyActionListener value="#{proc}"
+																 target="#{LaudoController.buscaLaudoDTO.procedimento}" />
+								</p:commandButton>
+							</div>
+						</h:column>
+					</b:dataTable>
+				</p:outputPanel>
 			</h:form>
 		</p:dialog>
 

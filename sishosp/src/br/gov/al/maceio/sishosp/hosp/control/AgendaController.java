@@ -1333,6 +1333,11 @@ public class AgendaController implements Serializable {
 
     public void validarAgendamentosInformandoAtendimento() throws ProjetoException {
 
+        if (verificarSeEhFeriadoDataUnica()) {
+            JSFUtil.adicionarMensagemErro("A data selecionada é um feriado!", "Erro");
+            return;
+        }
+
         if (procedimentoValido() && existemPacientesAdicionados() && todosPacienteSelecionadoSaoAtivos()) {
             insereIdCidPrimarioEmPacientesSelecionados();
 

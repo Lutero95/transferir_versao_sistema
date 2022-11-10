@@ -1,9 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,7 +11,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import br.gov.al.maceio.sishosp.acl.dao.FuncionalidadeDAO;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
@@ -31,19 +27,11 @@ import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
-import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaLaudo;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
-import br.gov.al.maceio.sishosp.hosp.log.control.LaudoLog;
-import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
-import br.gov.al.maceio.sishosp.hosp.model.CboBean;
-import br.gov.al.maceio.sishosp.hosp.model.CidBean;
-import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
-import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaIdadePacienteDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaLaudoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PacienteLaudoEmLoteDTO;
-import br.gov.al.maceio.sishosp.hosp.model.dto.PacientesComInformacaoAtendimentoDTO;
-import br.gov.al.maceio.sishosp.questionario.enums.ModeloSexo;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite.UnidadeLimiteType;
 
@@ -75,6 +63,7 @@ public class LaudoController implements Serializable {
     private List<PacienteLaudoEmLoteDTO> listaPacienteLaudoEmLoteDTO;
     private List<PacienteBean> listaPacientes;
     private List<PacienteBean> listaPacientesFiltro;
+    private List<ProcedimentoBean> listaProcedimentosFiltro;
     private PacienteLaudoEmLoteDTO pacienteLaudoEmLoteSelecionado;
     private PacienteDAO pacienteDAO;
     private FuncionarioBean usuarioLiberacao;
@@ -91,7 +80,7 @@ public class LaudoController implements Serializable {
     private static final String CABECALHO_ALTERACAO_LOTE = "Alteração de Laudo em Lote";
     private static final String TITULO_CID_PRIMARIO = "Este campo é associado ao Procedimento Primário e Data de Solicitação, selecione-os para buscar o CID 1";
 
-    public LaudoController() {
+    public LaudoController() throws ProjetoException {
         this.laudo = new LaudoBean();
         this.cabecalho = "";
         listaLaudo = new ArrayList<>();
@@ -110,6 +99,7 @@ public class LaudoController implements Serializable {
         listaPacientesFiltro = new ArrayList<>();
         pacienteDAO = new PacienteDAO();
         usuarioLiberacao = new FuncionarioBean();
+        listaProcedimentosFiltro = procedimentoDAO.listarProcedimento();
     }
 
     public String redirectEdit() {
@@ -171,6 +161,11 @@ public class LaudoController implements Serializable {
         laudo.setPeriodo(validade);
         calcularPeriodoLaudo();
         limpaDadosCids();
+    }
+
+    public List<ProcedimentoBean> listaProcedimentoAutoComplete(String query)
+            throws ProjetoException {
+        return procedimentoDAO.listarProcedimentoBusca(query, 1);
     }
 
     public void limpaDadosCids() {
@@ -672,6 +667,14 @@ public class LaudoController implements Serializable {
         JSFUtil.fecharDialog("dlgcadlaudo");
     }
 
+    public void abrirDialogListaProcedimentos() {
+        JSFUtil.abrirDialog("dlgConsulProc");
+    }
+
+    public void fecharDialogListaProcedimentos() {
+        JSFUtil.fecharDialog("dlgConsulProc");
+    }
+
     public List<CidBean> listaCidAutoCompletePorProcedimento(String query) throws ProjetoException {
         List<CidBean> result = cDao.listarCidsAutoComplete(query);
         return result;
@@ -956,4 +959,12 @@ public class LaudoController implements Serializable {
 	public void setUsuarioLiberacao(FuncionarioBean usuarioLiberacao) {
 		this.usuarioLiberacao = usuarioLiberacao;
 	}
+
+    public List<ProcedimentoBean> getListaProcedimentosFiltro() {
+        return listaProcedimentosFiltro;
+    }
+
+    public void setListaProcedimentosFiltro(List<ProcedimentoBean> listaProcedimentosFiltro) {
+        this.listaProcedimentosFiltro = listaProcedimentosFiltro;
+    }
 }

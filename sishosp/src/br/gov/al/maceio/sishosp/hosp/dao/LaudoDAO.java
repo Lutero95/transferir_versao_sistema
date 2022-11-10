@@ -507,6 +507,10 @@ public class LaudoDAO {
             sql = sql + " and p.codprontuario_anterior = ?";
         }
 
+        if (buscaLaudoDTO.getProcedimento() != null){
+            sql = sql + " and pr.codProc = ?";
+        }
+
         sql = sql + " order by ano_final desc, mes_final desc, nome ";
 
         ArrayList<LaudoBean> lista = new ArrayList<>();
@@ -550,6 +554,11 @@ public class LaudoDAO {
                     || (buscaLaudoDTO.getTipoBusca().equals(TipoBuscaLaudo.PRONTUARIO_PACIENTE_ANTIGO.getSigla()))
                     && !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaLaudoDTO.getCampoBusca()))) {
                 stm.setInt(i, Integer.valueOf(buscaLaudoDTO.getCampoBusca()));
+                i++;
+            }
+
+            if (buscaLaudoDTO.getProcedimento() != null){
+                stm.setString(i, buscaLaudoDTO.getProcedimento().getCodProc());
                 i++;
             }
 

@@ -1,5 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.model.dto;
 
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
+
 import java.util.Date;
 
 public class BuscaLaudoDTO {
@@ -9,7 +11,8 @@ public class BuscaLaudoDTO {
     private String campoBusca;
     private Date dataInicial;
     private Date dataFinal;
-    private String tipoPeriodoData; 
+    private String tipoPeriodoData;
+	private ProcedimentoBean procedimento;
 
     public BuscaLaudoDTO() {
     }
@@ -61,5 +64,12 @@ public class BuscaLaudoDTO {
 	public void setTipoPeriodoData(String tipoPeriodoData) {
 		this.tipoPeriodoData = tipoPeriodoData;
 	}
- 
+
+	public ProcedimentoBean getProcedimento() {
+		return procedimento;
+	}
+
+	public void setProcedimento(ProcedimentoBean procedimento) {
+		this.procedimento = procedimento;
+	}
 }
