@@ -97,7 +97,7 @@ public class PtsController implements Serializable {
             }
             listaEspecialidadesEquipe = eDao.listarEspecialidadesPacienteEmTerapia(pts.getPrograma().getIdPrograma(), pts.getGrupo().getIdGrupo(), pts.getPaciente().getId_paciente());
 
-            permiteAlterar = (unidadePermiteAlterar || permiteAlterarPts());
+            permiteAlterar = true;//(unidadePermiteAlterar || permiteAlterarPts());
             for(PtsArea area : pts.getListaPtsArea()){
                 boolean p = permiteAlterarArea(area);
                 alteracaoPorArea.put(area.getId(), p);
@@ -316,7 +316,6 @@ public class PtsController implements Serializable {
     }
 
     protected boolean permiteAlterarArea(PtsArea area) throws ProjetoException {
-        if(permiteAlterar) return true;
         return ptsDao.verificaSePodeEditarAreaPTS(area, user_session);
     }
 
