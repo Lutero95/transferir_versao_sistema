@@ -1,14 +1,9 @@
 package br.gov.al.maceio.sishosp.acl.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.sql.*;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
 
 import javax.faces.context.FacesContext;
 
@@ -1591,6 +1586,55 @@ public class FuncionarioDAO {
 		return lista;
 	}
 
+	public HashMap<Long, String> mapFuncionariosAfastados(Date dataAtendimento) throws ProjetoException {
+
+		HashMap<Long, String> ids = new HashMap<>();
+
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_funcionario");
+
+		String sql = "select af.id_funcionario_afastado, af.motivo_afastamento \n" +
+				"from adm.afastamento_funcionario af\n" +
+				"where ? between af.inicio_afastamento and af.fim_afastamento ";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setTimestamp(1, new Timestamp(dataAtendimento.getTime()));
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				String motivo = "";
+				switch (rs.getString("motivo_afastamento")){
+					case "FA":
+						motivo = "Falta";
+						break;
+					case "LM":
+						motivo = "Licença Médica";
+						break;
+					case "FE":
+						motivo = "Férias";
+						break;
+					case "DE":
+						motivo = "Desligamento";
+						break;
+				}
+
+				ids.put(rs.getLong("id_funcionario_afastado"), motivo);
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return ids;
+	}
+
 	public List<FuncionarioBean> listarProfissionalAtendimento() throws ProjetoException {
 
 		List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
@@ -3072,18 +3116,18 @@ public class FuncionarioDAO {
 	public void bloqueiaAcessoSeProfissionalEstaAfastadoOuDesligado(String cpf, Connection conexaoAuxiliar)
 			throws ProjetoException, SQLException {
 
-		String sql = "select f.ativo,\r\n" + 
-				"	case when current_date between af.inicio_afastamento and af.fim_afastamento\r\n" + 
-				"		then 'S'\r\n" + 
-				"		else 'N'\r\n" + 
-				"		end as afastado\r\n" + 
-				"	from acl.funcionarios f \r\n" + 
-				"	left join adm.afastamento_funcionario af on af.id_funcionario_afastado = f.id_funcionario \r\n" + 
-				"	left join hosp.unidade u on f.codunidade = u.id \r\n" + 
-				"	left join hosp.parametro p on p.codunidade = u.id \r\n" + 
-				"	where af.motivo_afastamento != 'FA' and f.cpf = ? and \r\n" + 
-				"		( (current_date between af.inicio_afastamento and af.fim_afastamento)\r\n" + 
-				"		or f.ativo = 'N') and p.bloquear_acesso_em_afastamento = true \r\n" + 
+		String sql = "select f.ativo,\r\n" +
+				"	case when current_date between af.inicio_afastamento and af.fim_afastamento\r\n" +
+				"		then 'S'\r\n" +
+				"		else 'N'\r\n" +
+				"		end as afastado\r\n" +
+				"	from acl.funcionarios f \r\n" +
+				"	left join adm.afastamento_funcionario af on af.id_funcionario_afastado = f.id_funcionario \r\n" +
+				"	left join hosp.unidade u on f.codunidade = u.id \r\n" +
+				"	left join hosp.parametro p on p.codunidade = u.id \r\n" +
+				"	where af.motivo_afastamento != 'FA' and f.cpf = ? and \r\n" +
+				"		( (current_date between af.inicio_afastamento and af.fim_afastamento)\r\n" +
+				"		or f.ativo = 'N') and p.bloquear_acesso_em_afastamento = true \r\n" +
 				"		order by af.fim_afastamento desc	limit 1;";
 
 		try {

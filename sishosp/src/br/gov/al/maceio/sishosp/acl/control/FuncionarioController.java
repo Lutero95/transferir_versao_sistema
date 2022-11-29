@@ -4,21 +4,16 @@ package br.gov.al.maceio.sishosp.acl.control;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import br.gov.al.maceio.sishosp.acl.model.*;
-import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.AtalhosAmbulatorialDTO;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
@@ -54,6 +49,7 @@ public class FuncionarioController implements Serializable {
 	private FuncionarioBean usuario;
 	private FuncionarioBean profissional;
 	private List<FuncionarioBean> listaProfissional;
+	private HashMap<Long, String> profissionaisAfastadosMap;
 	private String cabecalho;
 	private int tipo;
 	private ArrayList<ProgramaBean> listaGruposEProgramasProfissional;
@@ -122,6 +118,7 @@ public class FuncionarioController implements Serializable {
 		
 		// Profissional
 		listaProfissional = new ArrayList<FuncionarioBean>();
+		profissionaisAfastadosMap = new HashMap<>();
 		this.profissional = null;
 		this.profissional = new FuncionarioBean();
 		this.listaGruposEProgramasProfissional = new ArrayList<ProgramaBean>();
@@ -235,6 +232,11 @@ public class FuncionarioController implements Serializable {
 		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(url)) {
 			FacesContext.getCurrentInstance().getExternalContext().redirect(url);
 		}
+	}
+
+	public HashMap<Long, String> carregarFuncionariosAfastadosNaData(Date data) throws ProjetoException {
+		profissionaisAfastadosMap = fDao.mapFuncionariosAfastados(data);
+		return profissionaisAfastadosMap;
 	}
 
 	public String autenticarUsuario() throws ProjetoException {
@@ -358,7 +360,6 @@ public class FuncionarioController implements Serializable {
 		ServletContext scontext = (ServletContext) this.getFacesContext().getExternalContext().getContext();
 		return scontext;
 	}
-
 
 	private String carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao() throws ProjetoException {
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_usuario",
@@ -987,9 +988,14 @@ public class FuncionarioController implements Serializable {
 	public void listarProfissionaisAtivos() throws ProjetoException {
 		listaProfissional = fDao.listarTodosOsProfissionaisAtivos();
 	}
-	
+
 	public void listarProfissionaisConfigAgenda() throws ProjetoException {
 		listaProfissional = fDao.listarProfissionalAtendimento();
+	}
+
+	public void listarProfissionaisComAfastados(Date dataAtendimento) throws ProjetoException {
+		listaProfissional = fDao.listarProfissionalAtendimento();
+		this.profissionaisAfastadosMap = fDao.mapFuncionariosAfastados(dataAtendimento);
 	}
 
 	public void addListaGruposEProgramasProfissional() {
@@ -1048,6 +1054,11 @@ public class FuncionarioController implements Serializable {
 	public List<FuncionarioBean> listaProfissionalAutoComplete(String query) throws ProjetoException {
 		List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 1);
 		return result;
+	}
+
+	public List<FuncionarioBean> listaProfissionalNaoAfastadoAutoComplete(String query) throws ProjetoException {
+		List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 1);
+		return result.stream().filter(f -> !profissionaisAfastadosMap.containsKey(f.getId())).collect(Collectors.toList());
 	}
 	
 	public List<FuncionarioBean> listaProfissionalAtivoAutoComplete(String query) throws ProjetoException {
@@ -1802,5 +1813,21 @@ public class FuncionarioController implements Serializable {
 
 	public void setNovaSenha(String novaSenha) {
 		this.novaSenha = novaSenha;
+	}
+
+	public HashMap<Long, String> getProfissionaisAfastadosMap() {
+		return profissionaisAfastadosMap;
+	}
+
+	public void setProfissionaisAfastadosMap(HashMap<Long, String> profissionaisAfastadosMap) {
+		this.profissionaisAfastadosMap = profissionaisAfastadosMap;
+	}
+
+	public UnidadeDAO getUnidadeDAO() {
+		return unidadeDAO;
+	}
+
+	public void setUnidadeDAO(UnidadeDAO unidadeDAO) {
+		this.unidadeDAO = unidadeDAO;
 	}
 }

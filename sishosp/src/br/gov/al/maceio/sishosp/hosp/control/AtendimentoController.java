@@ -376,7 +376,15 @@ public class AtendimentoController implements Serializable {
             listarAtendimentosEquipe();
         }
     }
-    
+
+    public Date getDataAtende() {
+        return dataAtende;
+    }
+
+    public void setDataAtende(Date dataAtende) {
+        this.dataAtende = dataAtende;
+    }
+
     public void executaMetodosInicializadoresAjustesAtendimentos() throws ProjetoException {
         verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
         verificaSeExisteAlgumaCargaSigtap();

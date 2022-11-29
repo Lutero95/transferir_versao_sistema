@@ -10,6 +10,7 @@
 		<f:metadata>
 			<f:viewAction action="#{AtendimentoController.getCarregaGerenciarAtendimentos()}" />
 			<f:viewAction action="#{AtendimentoController.buscarSituacoes()}" />
+			<f:viewAction action="#{MBFuncionarios.carregarFuncionariosAfastadosNaData(AtendimentoController.atendimento.dataAtendimentoInicio)}" />
 		</f:metadata> 
 
 		<div class="panel panel-primary top-primary">
@@ -114,7 +115,7 @@
 								class="btn-prime btn-acao-table acao-agend" immediate="true"
 								update=":frmPrincipalPts"
 								rendered="#{AtendimentoController.ehEquipe == 'Sim'}"
-								action="#{AtendimentoController.carregarPtsDoPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
+								action="#{AtendimentoController.carregarPtsDoPaciente(AtendimentoController.atendimento.programa.idPrograma, AtendimentoController.atendimento.grupo.idGrupo, AtendimentoController.atendimento.paciente.id_paciente)}"
 								oncomplete="PF('dlgConsultaPTS').show();" />
 
 						</div>
@@ -732,7 +733,7 @@
 								requiredMessage="Profissional: Campo obrigatório!"
 								value="#{AtendimentoController.funcionarioAux}" size="55"
 								converter="conFuncionario" class="select-agendaEquipe4"
-								completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
+								completeMethod="#{MBFuncionarios.listaProfissionalNaoAfastadoAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
 								minQueryLength="1" itemValue="#{theme}"
 								itemLabel="#{theme.nome}">
@@ -741,7 +742,7 @@
 							</p:autoComplete>
 
 							<p:commandButton icon="ui-icon-search"
-								action="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
+								action="#{MBFuncionarios.listarProfissionaisComAfastados(AtendimentoController.atendimento.getDataAtendimentoInicio())}"
 								process="@this" update="formConsultProf2"
 								oncomplete="PF('dlgConsultaProf2').show();" />
 						</b:column>
@@ -783,7 +784,7 @@
 		</p:dialog>
 
 
-		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsultaProf2" dynamic="true"
+		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsultaProf2" dynamic="true" height="350"
 			modal="true">
 			<h:form id="formConsultProf2">
 				<p:outputPanel>
@@ -795,7 +796,7 @@
 							<f:facet name="header">
                                 Profissional
                             </f:facet>
-							<p:outputLabel value="#{profi.nome}" />
+							<p:outputLabel value="#{(MBFuncionarios.profissionaisAfastadosMap.containsKey(profi.id) ? 'Afastado(a) por '.concat(MBFuncionarios.profissionaisAfastadosMap.get(profi.id)).concat(' - ') : '').concat(profi.nome)}" />
 						</h:column>
 
 						<h:column>
@@ -809,9 +810,10 @@
 							<f:facet name="header">
                                 Adicionar
                             </f:facet>
-							<p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
+							<p:commandButton icon="fa fa-fw fa-#{MBFuncionarios.profissionaisAfastadosMap.containsKey(profi.id) ? 'ban' : 'check'}" title="Selecionar"
 								update=":frmincprof:outProf"
-								class="new-btn-acao-table acao-editar"
+								disabled="#{MBFuncionarios.profissionaisAfastadosMap.containsKey(profi.id)}"
+								class="new-btn-acao-table acao-#{MBFuncionarios.profissionaisAfastadosMap.containsKey(profi.id) ? 'excluir' : 'editar'}"
 								oncomplete="PF('dlgConsultaProf2').hide();"
 								action="#{MBFuncionarios.listarCbosFuncionarios(AtendimentoController.funcionarioAux.id)}">
 								<f:setPropertyActionListener value="#{profi}"
