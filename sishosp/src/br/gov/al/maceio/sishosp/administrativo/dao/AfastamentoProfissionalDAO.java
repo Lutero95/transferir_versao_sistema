@@ -389,17 +389,33 @@ public class AfastamentoProfissionalDAO {
 		return afastamentoProfissional;
 	}
 
-	public Boolean excluirAfastamentoProfissional(int id) throws ProjetoException {
+	public Boolean excluirAfastamentoProfissional(int id, Long usuarioExclusao) throws ProjetoException {
 
-		Boolean retorno = false;
+		Boolean retorno;
 
-		String sql = "delete from adm.afastamento_funcionario where id = ?";
+		String sql = "INSERT INTO adm.afastamento_funcionario_excluido " +
+				"(tipo_afastamento, id_funcionario_afastado, inicio_afastamento, fim_afastamento, " +
+				"usuario_afastamento, motivo_afastamento, timestamp_afastamento, turno, " +
+				"usuario_exclusao, timestamp_exclusao) " +
+				"select tipo_afastamento, id_funcionario_afastado, inicio_afastamento, fim_afastamento, " +
+				"operador_cadastro as usuario_afastamento, motivo_afastamento, data_hora_cadastro as timestamp_afastamento, " +
+				"turno, ?, now() " +
+				"from adm.afastamento_funcionario " +
+				"where id = ? ";
+
 
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, id);
+			stmt.setLong(1, usuarioExclusao);
+			stmt.setLong(2, id);
 			stmt.execute();
+
+			sql = "delete from adm.afastamento_funcionario where id = ?";
+			PreparedStatement stmt2 = con.prepareStatement(sql);
+			stmt2.setLong(1, id);
+			stmt2.execute();
+
 			con.commit();
 			retorno = true;
 		} catch (SQLException sqle) {

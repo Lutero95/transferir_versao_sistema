@@ -11,6 +11,7 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class AfastamentoProfissionalController implements Serializable {
     private boolean tiposDeAfastamentoPossuemSituacaoAtendimento;
     private FuncionarioDAO fDao = new FuncionarioDAO();
 	private List<FuncionarioBean> listaProfissional;
+    private FuncionarioBean user_session;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroafastamentoprofissional?faces-redirect=true";
@@ -34,6 +36,8 @@ public class AfastamentoProfissionalController implements Serializable {
     public AfastamentoProfissionalController() {
         this.afastamentoProfissional = new AfastamentoProfissional();
         listaAfastamentosProfissionais = new ArrayList<>();
+        this.user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
     }
     
     public void limpaSelecaoTurnoAfastamento() {
@@ -68,7 +72,7 @@ public class AfastamentoProfissionalController implements Serializable {
     }
 
     public void excluirAfastamentoProfissional() throws ProjetoException {
-        boolean excluiu = aDao.excluirAfastamentoProfissional(afastamentoProfissional.getId());
+        boolean excluiu = aDao.excluirAfastamentoProfissional(afastamentoProfissional.getId(), this.user_session.getId());
         if (excluiu == true) {
             JSFUtil.adicionarMensagemSucesso("Afastamento do Profissional excluído com sucesso!", "Sucesso");
             JSFUtil.fecharDialog("dlgExclusao");
