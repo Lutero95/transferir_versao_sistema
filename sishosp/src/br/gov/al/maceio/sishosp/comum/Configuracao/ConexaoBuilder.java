@@ -8,9 +8,11 @@ public class ConexaoBuilder {
 
         Conexoes conexoes = new Conexoes();
         if(propriedades.Conexao.equals(Propriedades.Conexoes.LOCALHOST)){
-            conexoes.setUrlBanco("jdbc:postgresql://localhost:5432/"+nomeBanco);
-            conexoes.setUsuario("ehosp");
-            conexoes.setSenha("ehosp");
+            //localhost: 5432
+            conexoes.setUrlBanco("jdbc:postgresql://localhost:5441/"+nomeBanco);
+            //usuario: ehosp, senha: ehosp
+            conexoes.setUsuario("postgres");
+            conexoes.setSenha("12345");
         }
         else if(propriedades.Conexao.equals(Propriedades.Conexoes.PRODUCAO)){
             conexoes.setUrlBanco("jdbc:postgresql://node39025-env-8766995.nordeste-idc.saveincloud.net:11511/"+nomeBanco);

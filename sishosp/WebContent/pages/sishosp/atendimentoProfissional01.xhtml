@@ -18,7 +18,7 @@
 			<f:viewAction
 				action="#{AtendimentoController.buscarSituacoesFiltroAtendimentoRealizado()}" />
 			<f:viewAction
-				action="#{evolucaoPadraoController.listarEvolucoesPadrao()}" />	
+				action="#{evolucaoPadraoController.listarEvolucoesPadrao()}" />
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -37,11 +37,11 @@
 					<p:row>
 						<div align="center">
 							<p:row>
-								<p:commandButton value="Consultar Evolucao" look="success"
-									size="sm" icon="ui-icon-search" immediate="true"
-									update=":frmPrincipal"
-									action="#{AtendimentoController.carregaEvolucoesPacienteProfissional(AtendimentoController.atendimento.paciente.id_paciente)}"
-									oncomplete="PF('dlgConsultaEvolucoes').show();" />
+<!--								<p:commandButton value="Consultar Evolucao" look="success"-->
+<!--									size="sm" icon="ui-icon-search" immediate="true"-->
+<!--									update=":frmPrincipal"-->
+<!--									action="#{AtendimentoController.carregaEvolucoesPacienteProfissional(AtendimentoController.atendimento.paciente.id_paciente)}"-->
+<!--									oncomplete="PF('dlgConsultaEvolucoes').show();" />-->
 
 								<p:commandButton value="Consultar PTS" look="success" size="sm"
 									style="margin-left: 10px" icon="ui-icon-search"
@@ -65,10 +65,38 @@
 									action="#{AtendimentoController.abrirDialogProcedimentos()}"
 									update=":frmPrincipalProc"/>
 							</p:row>
+
 						</div>
 					</p:row>
+					<!--Inicio alteracao-->
+
+					<!--Fim alteracao-->
 
 				</h:form>
+
+				<div class="panel-body table-body">
+					<b:label value="Consultar Evolução Por Especialidade" id="idArea" severity="info"
+							 class="fire-label" />
+					<h:form id="formTipoBusca">
+
+						<p:selectOneMenu class="select-agendaEquipe2" required="true"
+										 style="width: 250px" requiredMessage="Especialidade: Campo obrigatório!"
+										 value="#{AtendimentoController.identificadorEspecialidade}">
+							<f:selectItem itemLabel="GERAL" itemValue="geral"></f:selectItem>
+							<f:selectItems value="#{AtendimentoController.listaEspecialidadesEquipe}"
+										   var="e"
+										   itemLabel="#{e.descEspecialidade}"
+										   itemValue="#{e.codEspecialidade}" />
+						</p:selectOneMenu>
+						<div>
+							<p:commandButton value="Buscar" icon="ui-icon-search"
+											 class="select-agendaEquipe2"
+											 update=":frmPrincipal"
+											 action="#{AtendimentoController.listarEvolucoesPorEspecialidade()}"
+											 oncomplete="PF('dlgConsultaEvolucoes').show();"></p:commandButton>
+						</div>
+					</h:form>
+				</div>
 
 				<h:form id="formConsAge">
 					<br></br>
@@ -216,7 +244,7 @@
 									value="#{evolucaoPadraoController.listaEvolucoesPadrao}"
 									itemLabel="#{evolucao.titulo}" itemValue="#{evolucao.descricao}" />
 									
-								<p:ajax event="itemSelect" update="campoevolucao" 
+								<p:ajax event="itemSelect" update="campoevolucao"
 									listener="#{AtendimentoController.adicionarTextoEvolucaoPadraoNoCampoEvolucao()}"/>	
 							</p:selectOneMenu>
 							<p:tooltip id="toolTip" for="evolucaopadrao" position="top"

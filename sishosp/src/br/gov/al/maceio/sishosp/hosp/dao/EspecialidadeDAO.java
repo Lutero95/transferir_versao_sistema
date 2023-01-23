@@ -270,8 +270,8 @@ public class EspecialidadeDAO {
         String sql = "select distinct pi.codprograma, pi.codgrupo,es.id_especialidade, es.descespecialidade from hosp.paciente_instituicao pi\n" + 
         		" left join hosp.laudo l on l.id_laudo = pi.codlaudo\n" + 
         		"join hosp.profissional_dia_atendimento pda on pda.id_paciente_instituicao = pi.id\n" + 
-        		"LEFT JOIN acl.funcionarios f ON (f.id_funcionario = pda.id_profissional) \n" + 
-        		"LEFT JOIN hosp.especialidade es ON (es.id_especialidade = f.codespecialidade) \n" + 
+        		"LEFT JOIN acl.funcionarios f ON (f.id_funcionario = pda.id_profissional) \n" +
+        		"LEFT JOIN hosp.especialidade es ON (es.id_especialidade = f.codespecialidade) \n" +
         		"where pi.codprograma=? and pi.codgrupo=? and coalesce(l.codpaciente, pi.id_paciente) =? and status='A'";
 
 
@@ -294,6 +294,42 @@ public class EspecialidadeDAO {
 		} catch (Exception ex) {
 			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
+//    MÉTODO ADICIONADO - MARTINHO
+    public List<EspecialidadeBean> listarEspecialidadesEvolucaoEmTerapia()
+            throws ProjetoException {
+
+        List<EspecialidadeBean> lista = new ArrayList<>();
+
+        String sql = "select distinct e.id_especialidade, e.descespecialidade from acl.funcionarios f \n" +
+                "inner join hosp.especialidade e on f.codespecialidade = e.id_especialidade \n" +
+                "order by e.descespecialidade ";
+
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                EspecialidadeBean esp = new EspecialidadeBean();
+                esp.setCodEspecialidade(rs.getInt("id_especialidade"));
+                esp.setDescEspecialidade(rs.getString("descespecialidade"));
+                lista.add(esp);
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {

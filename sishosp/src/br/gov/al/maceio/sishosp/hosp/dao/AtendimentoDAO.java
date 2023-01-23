@@ -1479,6 +1479,45 @@ public class AtendimentoDAO {
 		return lista;
 	}
 
+	// Funcionalidade de filtro por especialidade adicionada - Martinho
+	public List<AtendimentoBean> carregarEvolucoesPorEspecialidade(Integer codPaciente, Integer codEspecialidade) throws ProjetoException {
+
+		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario, p.nome FROM hosp.atendimentos1 a1 "
+				+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
+				+ "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento)"
+				+ "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) "
+				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ? and f.codespecialidade = ? "
+				+ "and coalesce(a.situacao, 'A')<> 'C' and coalesce(a1.excluido, 'N' )= 'N' and p.ativo = 'S' "
+				+ "ORDER BY a.dtaatende DESC ; ";
+
+		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, codPaciente);
+			stm.setLong(2, codEspecialidade);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				populaResultSetEvolucaoPacienteEquipeOuProfissional(lista, rs);
+			}
+
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				//comentado walter erro log ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+
 	public List<AtendimentoBean> carregarEvolucoesDoPacientePorEquipe(Integer idAtendimento) throws ProjetoException {
 
 		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario, pr.nome FROM hosp.atendimentos1 a1 " +

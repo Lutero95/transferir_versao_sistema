@@ -142,6 +142,7 @@ public class PtsController implements Serializable {
             pts.setObjetivosGeraisMultidisciplinar(null);
             pts.setData(null);
 
+            System.out.println("Código do paciente em renovação: " + pts.getGerenciarPaciente().getId());
             listaEspecialidadesEquipe = eDao.listarEspecialidadesEquipe(pts.getGerenciarPaciente().getId());
 
         } else {

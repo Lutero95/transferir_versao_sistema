@@ -98,6 +98,13 @@ public class AtendimentoController implements Serializable {
     private List<EquipeBean> listaEquipe;
     private String textoEvolucaoAuxiliar;
 
+    // os ultimos atributos foram adicionados - Martinho
+
+    private EspecialidadeDAO eDao = new EspecialidadeDAO();
+    private List<EspecialidadeBean> listaEspecialidadesEquipe;
+    private GerenciarPacienteDAO gPDao = new GerenciarPacienteDAO();
+    private String identificadorEspecialidade;
+
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
     //private static final String ENDERECO_PROFISSIONAL_NA_EQUIPE = "atendimentoProfissional01?faces-redirect=true";
@@ -347,6 +354,7 @@ public class AtendimentoController implements Serializable {
             this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
             listarTodosTiposProcedimentos();
             evolucaoFoiRealizadaNaDataAnterior(atendimento);
+            listaEspecialidadesEquipe = eDao.listarEspecialidadesEvolucaoEmTerapia();
         }
     }
 
@@ -935,6 +943,21 @@ public class AtendimentoController implements Serializable {
 
     public void carregaEvolucoesPacienteProfissional(Integer codPaciente) throws ProjetoException {
         this.listaEvolucoes = atendimentoDAO.carregarEvolucoesDoPaciente(codPaciente);
+    }
+
+    //As funções getListaEspecialidadesEquipe() e listarEvolucoesPorEspecialidade() foram adicionadas - Martinho
+    public List<EspecialidadeBean> getListaEspecialidadesEquipe() {
+        return listaEspecialidadesEquipe;
+    }
+
+    public void listarEvolucoesPorEspecialidade() throws ProjetoException{
+
+        if(identificadorEspecialidade.equals("geral")){
+            this.listaEvolucoes = atendimentoDAO.carregarEvolucoesDoPaciente(atendimento.getPaciente().getId_paciente());
+        }else{
+            Integer codEspecialidade = Integer.parseInt(identificadorEspecialidade);
+            this.listaEvolucoes = atendimentoDAO.carregarEvolucoesPorEspecialidade(atendimento.getPaciente().getId_paciente(), codEspecialidade);
+        }
     }
 
     public void carregaEvolucoesPacienteEquipe(Integer idAtendimento) throws ProjetoException {
@@ -1836,5 +1859,14 @@ public class AtendimentoController implements Serializable {
 	public void setTextoEvolucaoAuxiliar(String textoEvolucaoAuxiliar) {
 		this.textoEvolucaoAuxiliar = textoEvolucaoAuxiliar;
 	}
-	
+
+    //Adicionado os dois métodos especiais para o atributo indentificador de especialidade
+
+    public String getIdentificadorEspecialidade() {
+        return identificadorEspecialidade;
+    }
+
+    public void setIdentificadorEspecialidade(String identificadorEspecialidade) {
+        this.identificadorEspecialidade = identificadorEspecialidade;
+    }
 }

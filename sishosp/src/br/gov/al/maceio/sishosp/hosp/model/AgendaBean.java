@@ -228,6 +228,7 @@ public class AgendaBean implements Serializable {
     }
 
     public void setHorario(String horario) {
+        System.out.println("AgendaBean - setHorario: horario: " + horario);
         this.horario = horario;
     }
 
