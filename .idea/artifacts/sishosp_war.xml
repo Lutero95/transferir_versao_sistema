@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="sishosp:war">
+    <output-path>$PROJECT_DIR$/sishosp/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>sishosp</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="ehosp-1.0.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="sishosp:war exploded" />
+    </root>
+  </artifact>
+</component>

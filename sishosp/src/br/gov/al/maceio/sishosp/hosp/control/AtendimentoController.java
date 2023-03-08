@@ -105,6 +105,8 @@ public class AtendimentoController implements Serializable {
     private GerenciarPacienteDAO gPDao = new GerenciarPacienteDAO();
     private String identificadorEspecialidade;
 
+    private Date dataFiltroEspecialidade;
+
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
     //private static final String ENDERECO_PROFISSIONAL_NA_EQUIPE = "atendimentoProfissional01?faces-redirect=true";
@@ -942,7 +944,8 @@ public class AtendimentoController implements Serializable {
     }
 
     public void carregaEvolucoesPacienteProfissional(Integer codPaciente) throws ProjetoException {
-        this.listaEvolucoes = atendimentoDAO.carregarEvolucoesDoPaciente(codPaciente);
+        //Adicionei o valor null, pois modifiquei a função de busca no banco.
+        this.listaEvolucoes = atendimentoDAO.carregarEvolucoesDoPaciente(codPaciente, null);
     }
 
     //As funções getListaEspecialidadesEquipe() e listarEvolucoesPorEspecialidade() foram adicionadas - Martinho
@@ -953,10 +956,10 @@ public class AtendimentoController implements Serializable {
     public void listarEvolucoesPorEspecialidade() throws ProjetoException{
 
         if(identificadorEspecialidade.equals("geral")){
-            this.listaEvolucoes = atendimentoDAO.carregarEvolucoesDoPaciente(atendimento.getPaciente().getId_paciente());
+            this.listaEvolucoes = atendimentoDAO.carregarEvolucoesDoPaciente(atendimento.getPaciente().getId_paciente(), getDataFiltroEspecialidade());
         }else{
             Integer codEspecialidade = Integer.parseInt(identificadorEspecialidade);
-            this.listaEvolucoes = atendimentoDAO.carregarEvolucoesPorEspecialidade(atendimento.getPaciente().getId_paciente(), codEspecialidade);
+            this.listaEvolucoes = atendimentoDAO.carregarEvolucoesPorEspecialidade(atendimento.getPaciente().getId_paciente(), codEspecialidade, getDataFiltroEspecialidade());
         }
     }
 
@@ -1868,5 +1871,13 @@ public class AtendimentoController implements Serializable {
 
     public void setIdentificadorEspecialidade(String identificadorEspecialidade) {
         this.identificadorEspecialidade = identificadorEspecialidade;
+    }
+
+    public Date getDataFiltroEspecialidade() {
+        return dataFiltroEspecialidade;
+    }
+
+    public void setDataFiltroEspecialidade(Date dataFiltroEspecialidade) {
+        this.dataFiltroEspecialidade = dataFiltroEspecialidade;
     }
 }

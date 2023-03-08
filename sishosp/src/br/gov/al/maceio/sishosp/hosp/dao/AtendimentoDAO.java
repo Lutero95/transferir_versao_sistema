@@ -1441,15 +1441,22 @@ public class AtendimentoDAO {
 		return lista;
 	}
 
-	public List<AtendimentoBean> carregarEvolucoesDoPaciente(Integer codPaciente) throws ProjetoException {
+	public List<AtendimentoBean> carregarEvolucoesDoPaciente(Integer codPaciente, Date dataFiltroEspecialidade) throws ProjetoException {
 
 		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario, p.nome FROM hosp.atendimentos1 a1 "
 				+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
 				+ "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) "
 				+ "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) "
 				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ?    "
-				+ "and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' and p.ativo = 'S' "
-				+ "ORDER BY a.dtaatende DESC ";
+				+ "and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' and p.ativo = 'S' ";
+
+
+		if(dataFiltroEspecialidade != null){
+			sql += "and a.dtaatende = ?";
+
+		}
+
+		sql += "ORDER BY a.dtaatende DESC ";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
 
@@ -1457,6 +1464,10 @@ public class AtendimentoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, codPaciente);
+			if(dataFiltroEspecialidade != null){
+				java.sql.Date dataFiltro = new java.sql.Date(dataFiltroEspecialidade.getTime());
+				stm.setDate(2, dataFiltro);
+			}
 			//	stm.setLong(2, user_session.getId());
 
 			ResultSet rs = stm.executeQuery();
@@ -1480,15 +1491,23 @@ public class AtendimentoDAO {
 	}
 
 	// Funcionalidade de filtro por especialidade adicionada - Martinho
-	public List<AtendimentoBean> carregarEvolucoesPorEspecialidade(Integer codPaciente, Integer codEspecialidade) throws ProjetoException {
+	public List<AtendimentoBean> carregarEvolucoesPorEspecialidade(Integer codPaciente, Integer codEspecialidade,
+																   Date dataFiltroEspecialidade) throws ProjetoException {
 
 		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario, p.nome FROM hosp.atendimentos1 a1 "
 				+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
 				+ "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento)"
 				+ "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) "
 				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ? and f.codespecialidade = ? "
-				+ "and coalesce(a.situacao, 'A')<> 'C' and coalesce(a1.excluido, 'N' )= 'N' and p.ativo = 'S' "
-				+ "ORDER BY a.dtaatende DESC ; ";
+				+ "and coalesce(a.situacao, 'A')<> 'C' and coalesce(a1.excluido, 'N' )= 'N' and p.ativo = 'S' ";
+
+
+		if(dataFiltroEspecialidade != null){
+			sql += "and a.dtaatende = ?";
+
+		}
+
+		sql += "ORDER BY a.dtaatende DESC ";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
 
@@ -1497,6 +1516,10 @@ public class AtendimentoDAO {
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, codPaciente);
 			stm.setLong(2, codEspecialidade);
+			if(dataFiltroEspecialidade != null){
+				java.sql.Date dataFiltro = new java.sql.Date(dataFiltroEspecialidade.getTime());
+				stm.setDate(3, dataFiltro);
+			}
 
 			ResultSet rs = stm.executeQuery();
 
