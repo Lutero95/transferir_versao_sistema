@@ -85,6 +85,20 @@
 										   itemLabel="#{e.descEspecialidade}"
 										   itemValue="#{e.codEspecialidade}" />
 						</p:selectOneMenu>
+
+						<br/>
+						<div>
+							<br/>
+							<b:label value="Data da evolução:" severity="info" />
+							<br/>
+
+							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+										showOn="button" size="6" class="select-agendaEquipe2"
+										value="#{AtendimentoController.dataFiltroEspecialidade}"
+										disabled="#{AtendimentoController.listarEvolucoesPendentes == true}"
+										id="dataInicio" locale="pt" />
+						</div>
+
 						<div>
 							<p:commandButton value="Buscar" icon="ui-icon-search"
 											 class="select-agendaEquipe2"
