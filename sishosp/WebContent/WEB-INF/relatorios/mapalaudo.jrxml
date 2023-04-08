@@ -7,7 +7,7 @@
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="302"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="687"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ADefal_producao"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="pestalozzi_maceio"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -78,7 +78,7 @@
 	<parameter name="id_programa" class="java.lang.Integer"/>
 	<parameter name="id_procedimento" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select rank() over (order by p.nome asc) as seq, p.cns as cns, p.nome as nome,
+		<![CDATA[select distinct rank() over (order by p.nome asc) as seq, p.cns as cns, p.nome as nome,
 p.dtanascimento as dtnascimento, p.sexo, p.codraca as codraca,
 pr.codproc, pr.nome as nome_proc,
 pr.auditivo as eh_auditivo, pr.tipo_exame_auditivo,
@@ -102,10 +102,11 @@ join hosp.pacientes as p on (p.id_paciente = l.codpaciente)
 left join hosp.municipio m on m.id_municipio = p.codmunicipio
 join hosp.proc as pr on (pr.id = l.codprocedimento_primario)
 join hosp.cid c on c.cod = l.cid1
-join hosp.unidade u on u.id =  $P{codunidade} 
+join hosp.unidade u on u.id =  l.cod_unidade
 join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
 where l.data_autorizacao between $P{dt_inicial} and $P{dt_final}
-and ((  $P{id_procedimento}   is not null and pr.id =  $P{id_procedimento} ) or ((  $P{id_procedimento}   = 0 ) OR (  $P{id_procedimento}   is null )))]]>
+and ((  $P{id_procedimento}   is not null and pr.id =  $P{id_procedimento} ) or ((  $P{id_procedimento}   = 0 ) OR (  $P{id_procedimento}   is null )))
+and u.id = $P{codunidade}]]>
 	</queryString>
 	<field name="seq" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.label" value="seq"/>

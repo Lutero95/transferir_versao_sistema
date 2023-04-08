@@ -15,10 +15,7 @@ import br.gov.al.maceio.sishosp.administrativo.model.AfastamentoProfissional;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.administrativo.model.dto.BuscaAgendamentosParaFuncionarioAfastadoDTO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
-import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 
 public class SubstituicaoDAO {
@@ -139,7 +136,8 @@ public class SubstituicaoDAO {
                 "JOIN hosp.atendimentos a ON (a1.id_atendimento = a.id_atendimento) " +
                 "JOIN hosp.grupo g ON (a.codgrupo = g.id_grupo) " +
                 "JOIN hosp.programa p ON (a.codprograma = p.id_programa) " +
-                "WHERE a1.codprofissionalatendimento = ? AND a.dtaatende >= ? AND a.dtaatende <= ? ";
+                "JOIN hosp.unidade u ON (p.cod_unidade = u.id)" +
+                "WHERE a1.codprofissionalatendimento = ? AND a.dtaatende >= ? AND a.dtaatende <= ? AND u.id = ?";
         else
             sql = "SELECT a1.id_atendimentos1, a.codgrupo, g.descgrupo, a.codprograma, p.descprograma, a.dtaatende, " +
                     "CASE WHEN a.turno = 'M' THEN 'Manhã' WHEN a.turno = 'T' THEN 'Tarde' END AS turno " +
@@ -147,7 +145,8 @@ public class SubstituicaoDAO {
                     "JOIN hosp.atendimentos a ON (a1.id_atendimento = a.id_atendimento) " +
                     "JOIN hosp.grupo g ON (a.codgrupo = g.id_grupo) " +
                     "JOIN hosp.programa p ON (a.codprograma = p.id_programa) " +
-                    "WHERE a1.codprofissionalatendimento = ? AND a.dtaatende >= ?";
+                    "JOIN hosp.unidade u ON (p.cod_unidade = u.id)" +
+                    "WHERE a1.codprofissionalatendimento = ? AND a.dtaatende >= ? AND u.id = ?";
         
         if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma())) 
         if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma().getIdPrograma())) {
@@ -162,15 +161,16 @@ public class SubstituicaoDAO {
         if (!buscaAgendamentosParaFuncionarioAfastadoDTO.getTurno().equals("A"))
             sql = sql + "AND a.turno = ?";
 
-
+        sql += "ORDER BY a.dtaatende ";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setLong(1, buscaAgendamentosParaFuncionarioAfastadoDTO.getFuncionario().getId());
             stm.setDate(2, DataUtil.converterDateUtilParaDateSql(buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoInicio()));
+            stm.setInt(3, SessionUtil.recuperarDadosSessao().getUnidade().getId());
             
-            int i = 2;
+            int i = 3;
             
             if (!motivoAfastamento.equals("DE")) {
             	i = i + 1;
